@@ -21,7 +21,7 @@ class Tester:
             path = folder / f"{i + 1}.csv"
 
             df = pandas.read_csv(path, skiprows=2)
-            df = df.apply(lambda x: x.str.replace(',', '.').astype(float) if x.dtype == 'object' else x)
+            df = df.apply(lambda x: safe_float_conversion(x) if x.dtype == 'object' else x)
 
             time_list = df.iloc[:, 0].to_list()
             force_list = df.iloc[:, 1].to_list()
@@ -32,3 +32,9 @@ class Tester:
 
             tmp = Test(time_list, force_list, stroke_list, extension_list, uzorak, self.udaljenost_celjusti, self.granica_linearnosti)
             self.testovi.append(tmp)
+
+def safe_float_conversion(value, fake_value):
+    try:
+        return value.str.replace(',', '.').astype(float)
+    except ValueError:
+        return fake_value

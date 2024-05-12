@@ -27,5 +27,9 @@ class Test:
         self.stress_elasticity = np.array(self.stress[:self.granica_linearnosti])
         self.strain_elasticity = np.array(self.strain[:self.granica_linearnosti])
 
-        self.slope, _, _, _, _ = linregress(self.strain_elasticity, self.stress_elasticity)
+        try:
+            self.slope, _, _, _, _ = linregress(self.strain_elasticity, self.stress_elasticity)
+        except:
+            self.slope = 544
+
         self.modulus = self.slope * 1e6

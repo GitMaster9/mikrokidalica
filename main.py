@@ -7,9 +7,9 @@ from tester import Tester
 karlo_podatci = Path("3_karlo")
 # diana_podatci = Path("4_diana")
 
-karlo = Tester(karlo_podatci, 56.0, 300)
+tester = Tester(karlo_podatci, 56.0, 300)
 
-test = karlo.testovi[0]
+test = tester.testovi[0]
 
 granica_grafa = 2500
 
