@@ -5,8 +5,9 @@ from uzorak import Uzorak
 from test import Test
 
 class Tester:
-    def __init__(self, folder: Path, udaljenost_celjusti: float):
+    def __init__(self, folder: Path, udaljenost_celjusti: float, granica_linearnosti: int):
         self.udaljenost_celjusti = udaljenost_celjusti
+        self.granica_linearnosti = granica_linearnosti
         
         path = folder / "dimenzije.xlsx"
         df = pandas.read_excel(path)
@@ -29,5 +30,5 @@ class Tester:
 
             uzorak = Uzorak(i + 1, sirina[i], debljina[i], visina[i])
 
-            tmp = Test(time_list, force_list, stroke_list, extension_list, uzorak, self.udaljenost_celjusti)
+            tmp = Test(time_list, force_list, stroke_list, extension_list, uzorak, self.udaljenost_celjusti, self.granica_linearnosti)
             self.testovi.append(tmp)
