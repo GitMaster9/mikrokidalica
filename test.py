@@ -3,7 +3,8 @@ from scipy.stats import linregress
 import numpy as np
 
 class Test:
-    def __init__(self, time: list[float], force: list[float], streak: list[float], extension: list[float], uzorak: Uzorak, udaljenost_celjusti: float, granica_linearnosti: int):
+    def __init__(self, redni_broj: int, time: list[float], force: list[float], streak: list[float], extension: list[float], uzorak: Uzorak, udaljenost_celjusti: float, granica_linearnosti: int):
+        self.redni_broj = redni_broj
         self.time = time
         self.force = force
         self.streak = streak
@@ -26,6 +27,8 @@ class Test:
 
         self.stress_elasticity = np.array(self.stress[:self.granica_linearnosti])
         self.strain_elasticity = np.array(self.strain[:self.granica_linearnosti])
+
+        self.vlacna_cvrstoca = np.max(self.stress)
 
         try:
             self.slope, _, _, _, _ = linregress(self.strain_elasticity, self.stress_elasticity)
