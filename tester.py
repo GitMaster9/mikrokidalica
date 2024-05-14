@@ -59,10 +59,13 @@ class Tester:
 
         for test in self.testovi:
             output += f"TEST {test.redni_broj}\n"
+            output += f"Početna visina uzorka: {round(test.pocetna_visina_uzorka, 3)} mm\n"
+            output += f"Završna visina uzorka: {round(test.zavrsna_visina_uzorka, 3)} mm\n"
+            output += f"Ekstenzija uzorka: {round(test.zavrsna_ekstenzija, 3)} mm\n"
             output += f"Vlačna čvrstoća: {round(test.vlacna_cvrstoca, 3)} N/mm2\n"
-            output += f"Modul elastičnosti: {test.modulus:.3e} Pa\n"
+            output += f"Modul elastičnosti: {test.modulus:.3e} Pa\n\n"
 
-        output += "\n"
+        #output += "\n"
 
         output += f"Prosječna vlačna čvrstoća: {round(self.prosjecna_cvrstoca, 3)} N/mm2\n"
         output += f"Standardna devijacija vlačne čvrstoće: {round(self.standardna_devijacija_cvrstoca, 3)} N/mm2\n"

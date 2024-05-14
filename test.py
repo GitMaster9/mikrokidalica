@@ -29,6 +29,9 @@ class Test:
         self.strain_elasticity = np.array(self.strain[:self.granica_linearnosti])
 
         self.vlacna_cvrstoca = np.max(self.stress)
+        self.pocetna_visina_uzorka = self.uzorak.visina * 10
+        self.zavrsna_ekstenzija = self.extension[-1]
+        self.zavrsna_visina_uzorka = self.pocetna_visina_uzorka + self.zavrsna_ekstenzija
 
         try:
             self.slope, _, _, _, _ = linregress(self.strain_elasticity, self.stress_elasticity)
