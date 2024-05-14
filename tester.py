@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy
 
 from uzorak import Uzorak
 from test import Test
@@ -59,18 +60,18 @@ class Tester:
 
         for test in self.testovi:
             output += f"TEST {test.redni_broj}\n"
-            output += f"Vlačna čvrstoća: {round(test.vlacna_cvrstoca, 3)} N/mm2\n"
-            output += f"Modul elastičnosti: {test.modulus:.3e} Pa\n"
+            output += f"Vlačna čvrstoća: {round(test.vlacna_cvrstoca, 3)} MPa\n"
+            output += f"Modul elastičnosti: {round(test.modulus / 1e6, 3)} MPa\n"
 
         output += "\n"
 
-        output += f"Prosječna vlačna čvrstoća: {round(self.prosjecna_cvrstoca, 3)} N/mm2\n"
-        output += f"Standardna devijacija vlačne čvrstoće: {round(self.standardna_devijacija_cvrstoca, 3)} N/mm2\n"
+        output += f"Prosječna vlačna čvrstoća: {round(self.prosjecna_cvrstoca, 3)} MPa\n"
+        output += f"Standardna devijacija vlačne čvrstoće: {round(self.standardna_devijacija_cvrstoca, 3)} MPa\n"
         
         output += "\n"
 
-        output += f"Prosječni modul elastičnosti: {self.prosjecna_elasticnost:.3e} Pa\n"
-        output += f"Standardna devijacija modula elastičnosti: {self.standardna_devijacija_elasticnost:.3e} Pa\n" 
+        output += f"Prosječni modul elastičnosti: {round(self.prosjecna_elasticnost / 1e6, 3)} MPa\n"
+        output += f"Standardna devijacija modula elastičnosti: {round(self.standardna_devijacija_elasticnost / 1e6, 3)} MPa\n" 
 
         return output
     
@@ -86,12 +87,20 @@ class Tester:
             return
         
         plt.figure()
-
-        plt.plot(test.strain, test.stress)
+        plt.plot(test.strain, test.stress, label='Stress-Strain dijagram')
         plt.xlabel('Strain [%]')
-        plt.ylabel('Stress [N/mm2]')
+        plt.ylabel('Stress [MPa]')
         plt.title('Stress-Strain dijagram')
-        plt.axvline(x=test.strain_elasticity[-1], color='r', linestyle='--')
+        plt.axvline(x=test.strain_elasticity[-1], color='r', linestyle='--', label='Granica elastičnosti')
+        
+        coefficients = np.polyfit(test.strain_elasticity, test.stress_elasticity, 1)
+        y_min = test.stress_elasticity.min()
+        y_max = np.array(test.stress).max()
+        y_extended = np.linspace(y_min, y_max, 100)
+        x_extended = (y_extended - coefficients[1]) / coefficients[0]
+        
+        plt.plot(x_extended, y_extended, color='g', linestyle='-.', label='Elastičnost')
+        plt.legend()
         plt.show()
     
     def boxplot_cvrstoca(self):
@@ -99,16 +108,18 @@ class Tester:
         plt.boxplot(self.cvrstoce, patch_artist=True)
 
         plt.title('Kutijasti dijagram - vlačna čvrstoća')
-        plt.ylabel('Vlačna čvrstoća [N/mm2]')
+        plt.ylabel('Vlačna čvrstoća [MPa]')
+        plt.xticks([])
 
         plt.show()
 
     def boxplot_elasticnost(self):
         plt.figure()
-        plt.boxplot(self.elasticnosti, patch_artist=True)
+        plt.boxplot([x / 1e6 for x in self.elasticnosti], patch_artist=True)
 
         plt.title('Kutijasti dijagram - modul elastičnosti')
-        plt.ylabel('Modul elastičnosti [Pa]')
+        plt.ylabel('Modul elastičnosti [MPa]')
+        plt.xticks([])
 
         plt.show()
 
