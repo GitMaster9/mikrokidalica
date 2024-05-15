@@ -2,7 +2,6 @@ from pathlib import Path
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy
 
 from uzorak import Uzorak
 from test import Test
@@ -19,6 +18,9 @@ class Tester:
         sirina = df.iloc[:, 1].to_list()
         debljina = df.iloc[:, 2].to_list()
         visina = df.iloc[:, 3].to_list()
+
+        self.ekstenzije = []
+        self.postotci_ekstenzija = []
         
         self.testovi: list[Test] = []
         for i in range(6):
@@ -35,6 +37,8 @@ class Tester:
             uzorak = Uzorak(i + 1, sirina[i], debljina[i], visina[i])
 
             tmp = Test(i + 1, time_list, force_list, stroke_list, extension_list, uzorak, self.udaljenost_celjusti, self.granica_linearnosti)
+            self.ekstenzije.append(tmp.zavrsna_ekstenzija)
+            self.postotci_ekstenzija.append(tmp.postotak_ekstenzije)
             self.testovi.append(tmp)
 
         self.cvrstoce = []
@@ -49,6 +53,9 @@ class Tester:
 
         self.standardna_devijacija_cvrstoca = np.std(self.cvrstoce)
         self.standardna_devijacija_elasticnost = np.std(self.elasticnosti)
+
+        self.prosjecna_ekstenzija = np.average(self.ekstenzije)
+        self.prosjecni_postotak_ekstenzije = np.average(self.postotci_ekstenzija)
 
     def __str__(self):
         output = "ANALIZA TESTIRANJA\n"
@@ -65,8 +72,9 @@ class Tester:
             output += f"Ekstenzija uzorka: {round(test.zavrsna_ekstenzija, 3)} mm\n"
             output += f"Vlačna čvrstoća: {round(test.vlacna_cvrstoca, 3)} MPa\n"
             output += f"Modul elastičnosti: {round(test.modulus / 1e6, 3)} MPa\n"
+            output += "\n"
 
-        #output += "\n"
+        output += "ANALIZA\n"
 
         output += f"Prosječna vlačna čvrstoća: {round(self.prosjecna_cvrstoca, 3)} MPa\n"
         output += f"Standardna devijacija vlačne čvrstoće: {round(self.standardna_devijacija_cvrstoca, 3)} MPa\n"
@@ -74,7 +82,12 @@ class Tester:
         output += "\n"
 
         output += f"Prosječni modul elastičnosti: {round(self.prosjecna_elasticnost / 1e6, 3)} MPa\n"
-        output += f"Standardna devijacija modula elastičnosti: {round(self.standardna_devijacija_elasticnost / 1e6, 3)} MPa\n" 
+        output += f"Standardna devijacija modula elastičnosti: {round(self.standardna_devijacija_elasticnost / 1e6, 3)} MPa\n"
+
+        output += "\n"
+
+        output += f"Prosječna ekstenzija: {round(self.prosjecna_ekstenzija, 3)} mm\n"
+        output += f"Prosječni postotak ekstenzije: {round(self.prosjecni_postotak_ekstenzije, 3)} %\n"
 
         return output
     
